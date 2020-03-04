@@ -2,7 +2,9 @@ import sys
 from sprite import *
 from os import path
 
+
 class Game:
+    """docstring"""
     def __init__(self):
         pg.init()
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
