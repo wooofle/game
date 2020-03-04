@@ -1,39 +1,86 @@
-import pygame
+import sys
+from sprite import *
+from os import path
 
-pygame.init()
+class Game:
+    def __init__(self):
+        pg.init()
+        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
+        pg.display.set_caption(TITLE)
+        self.clock = pg.time.Clock()
+        pg.key.set_repeat(500, 100)
+        self.load_data()
 
-screen = pygame.display.set_mode((800, 800))
+    def load_data(self):
+        game_folder = path.dirname(__file__)
+        self.map_data = []
+        with open(path.join(game_folder, "map.txt"), "rt") as maplayout:
+            for line in maplayout:
+                self.map_data.append(line)
 
-pygame.display.set_caption("TEST")
+    def new(self):
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+#        self.player = Player(self, 10, 10)
+        for row, tiles in enumerate(self.map_data):
+            for col, tile in enumerate(tiles):
+                if tile == "1":
+                    Wall(self, col, row)
+                if tile == "P":
+                    self.player = Player(self, col, row)
 
-screenWidth = "empty"
-screenHeight = "empty"
-x = 50
-y = 50
+    def run(self):
+        self.playing = True
+        while self.playing:
+            self.dt = self.clock.tick(FPS) / 1000
+            self.events()
+            self.update()
+            self.draw()
 
-width = 40
-height = 60
-run = True
-while run:
-    pygame.time.delay(100)
+    def quit(self):
+        pg.quit()
+        sys.exit()
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
-    keys = pygame.key.get_pressed()
+    def update(self):
+        self.all_sprites.update()
 
-    if keys[pygame.K_LEFT]:
+    def draw_grid(self):
+        for x in range(0, WIDTH, TILESIZE):
+            pg.draw.line(self.screen, LIGHTGRAY, (x, 0), (x, HEIGHT))
+        for y in range(0, HEIGHT, TILESIZE):
+            pg.draw.line(self.screen, LIGHTGRAY, (0, y), (WIDTH, y))
+
+    def draw(self):
+        self.screen.fill(BGCOLOR)
+        self.draw_grid()
+        self.all_sprites.draw(self.screen)
+        pg.display.flip()
+
+    def events(self):
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                self.quit()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_ESCAPE:
+                    self.quit()
+                if event.key == pg.K_LEFT:
+                    self.player.move(dx=-1)
+                if event.key == pg.K_RIGHT:
+                    self.player.move(dx=1)
+                if event.key == pg.K_UP:
+                    self.player.move(dy=-1)
+                if event.key == pg.K_DOWN:
+                    self.player.move(dy=1)
+
+    def show_start_screen(self):
         pass
-    if keys[pygame.K_RIGHT]:
-        pass
-    if keys[pygame.K_UP]:
-        pass
-    if keys[pygame.K_DOWN]:
+
+    def show_go_screen(self):
         pass
 
-    screen.fill((0, 0, 0))
-    pygame.display.update()
-    pygame.draw()
-
-
-pygame.quit()
+g = Game()
+g.show_start_screen()
+while True:
+    g.new()
+    g.run()
+    g.show_go_screen()
