@@ -11,27 +11,61 @@ class Player(pg.sprite.Sprite):
         self.image = pg.Surface((C.TILESIZE, C.TILESIZE))
         self.image.fill(C.RED)
         self.rect = self.image.get_rect()
-        self.x = x
-        self.y = y
+        self.x = x * C.TILESIZE
+        self.y = y * C.TILESIZE
 
-    def move(self, dx=0, dy=0):
-        """Move player sprite based off of difference in x and y coords."""
-        if self.wall_collision(dx, dy):
-            self.x += dx
-            self.y += dy
+#    def move(self, dx=0, dy=0):
+#        """Move player sprite based off of difference in x and y coords."""
+#        if self.wall_collision(dx, dy):
+#            self.x += dx
+#            self.y += dy
 
     def update(self):
         """Update player sprite."""
-        self.rect.x = self.x * C.TILESIZE
-        self.rect.y = self.y * C.TILESIZE
+        self.get_keys()
+        self.x += self.vx * self.game.dt
+        self.y += self.vy * self.game.dt
+        self.rect.topleft = (self.x, self.y)
+        if pg.sprite.spritecollideany(self, self.game.walls):
+            self.x -= self.vx * self.game.dt
+            self.y -= self.vy * self.game.dt
+            self.rect.x = self.x
+            self.wall_collision('x')
+            self.rect.y = self.y
+            self.wall_collision('y')
 
-    def wall_collision(self, dx=0, dy=0):
+# self note if diagonal movement is added the correct number to fix the speed of it "7071"
+    def get_keys(self):
+        self.vx = 0
+        self.vy = 0
+        keys = pg.key.get_pressed()
+        if keys[pg.K_LEFT] or keys[pg.K_a]:
+            self.vx = -C.MOVEMENT_SPEED
+        elif keys[pg.K_RIGHT] or keys[pg.K_d]:
+            self.vx = C.MOVEMENT_SPEED
+        elif keys[pg.K_DOWN] or keys[pg.K_s]:
+            self.vy = C.MOVEMENT_SPEED
+        elif keys[pg.K_UP] or keys[pg.K_w]:
+            self.vy = -C.MOVEMENT_SPEED
+
+    def wall_collision(self, direction):
         """Detect player sprite collision with walls."""
-        for wall in self.game.walls:
-            if wall.x == self.x + dx and wall.y == self.y + dy:
-                return False
-        return True
-
+        if direction == "x":
+            hit = pg.sprite.spritecollide(self, self.game.walls, False)
+            if self.vx > 0:
+                self.x = hit[0].rect.left - self.rect.width
+            if self.vx < 0:
+                self.x = hit[0].self.rect.height
+            self.vx = 0
+            self.rect.x = self.x
+        if direction == 'y':
+            hit = pg.sprite.spritecollide(self, self.game.walls, False)
+            if self.vy > 0:
+                self.y = hit[0].rect.top - self.rect.height
+            if self.y < 0:
+                self.y = hit[0].self.rect.bottom
+            self.vy = 0
+            self.rect.y = self.y
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y):

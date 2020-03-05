@@ -25,7 +25,7 @@ class Game:
                 self.map_data.append(line)
 
     def new(self):
-        """Add docstring here."""
+        """Sets the game up by initialise."""
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
 #        self.player = Player(self, 10, 10)
@@ -37,7 +37,7 @@ class Game:
                     self.player = S.Player(self, col, row)
 
     def run(self):
-        """Add docstring here."""
+        """Main game loop if self.playing is set to False the game ends."""
         self.playing = True
         while self.playing:
             self.dt = self.clock.tick(C.FPS) / 1000
@@ -51,11 +51,11 @@ class Game:
         sys.exit()
 
     def update(self):
-        """Add docstring here."""
+        """Updates game loop."""
         self.all_sprites.update()
 
     def draw_grid(self):
-        """Add docstring here."""
+        """Draws Map Grids."""
         for x in range(0, C.WIDTH, C.TILESIZE):
             pg.draw.line(self.screen, C.LIGHTGRAY, (x, 0), (x, C.HEIGHT))
         for y in range(0, C.HEIGHT, C.TILESIZE):
@@ -69,21 +69,21 @@ class Game:
         pg.display.flip()
 
     def events(self):
-        """Add docstring here."""
+        """Catches all events here."""
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
-            if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-                if event.key == pg.K_LEFT:
-                    self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.player.move(dy=1)
+# if event.type == pg.KEYDOWN:
+#     if event.key == pg.K_ESCAPE:
+#         self.quit()
+#     if event.key == pg.K_LEFT:
+#         self.player.move(dx=-1)
+#     if event.key == pg.K_RIGHT:
+#         self.player.move(dx=1)
+#     if event.key == pg.K_UP:
+#         self.player.move(dy=-1)
+#     if event.key == pg.K_DOWN:
+#         self.player.move(dy=1)
 
     def show_start_screen(self):
         """Add docstring here."""
