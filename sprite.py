@@ -26,6 +26,7 @@ class Player(pg.sprite.Sprite):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.topleft = (self.x, self.y)
+    # Checks wall collusion withing update function
         if pg.sprite.spritecollideany(self, self.game.walls):
             self.x -= self.vx * self.game.dt
             self.y -= self.vy * self.game.dt
@@ -36,6 +37,7 @@ class Player(pg.sprite.Sprite):
 
 # self note if diagonal movement is added the correct number to fix the speed of it "7071"
     def get_keys(self):
+        """Detects if the keys are pressed and makes the character move according to keys pressed"""
         self.vx = 0
         self.vy = 0
         keys = pg.key.get_pressed()
@@ -50,24 +52,25 @@ class Player(pg.sprite.Sprite):
 
     def wall_collision(self, direction):
         """Detect player sprite collision with walls."""
-        if direction == "x":
-            hit = pg.sprite.spritecollide(self, self.game.walls, False)
-            if self.vx > 0:
-                self.x = hit[0].rect.left - self.rect.width
-            if self.vx < 0:
-                self.x = hit[0].self.rect.height
-            self.vx = 0
-            self.rect.x = self.x
-        if direction == 'y':
-            hit = pg.sprite.spritecollide(self, self.game.walls, False)
-            if self.vy > 0:
-                self.y = hit[0].rect.top - self.rect.height
-            if self.y < 0:
-                self.y = hit[0].self.rect.bottom
-            self.vy = 0
-            self.rect.y = self.y
+#        if direction == 'x':
+#            hit = pg.sprite.spritecollide(self, self.game.walls, False)
+#            if self.vx > 0:
+#                self.x = hit[0].rect.left - self.rect.width
+#            if self.vx < 0:
+#                self.x = hit[0].self.rect.height
+#            self.vx = 0
+#            self.rect.x = self.x
+#        if direction == 'y':
+#            hit = pg.sprite.spritecollide(self, self.game.walls, False)
+#            if self.vy > 0:
+#                self.y = hit[0].rect.top - self.rect.height
+#            if self.y < 0:
+#                self.y = hit[0].self.rect.bottom
+#            self.vy = 0
+#            self.rect.y =# self.y
 
 class Wall(pg.sprite.Sprite):
+    """Creates background grids"""
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
